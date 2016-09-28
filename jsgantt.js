@@ -804,9 +804,9 @@ JSGantt.GanttChart=function(pDiv, pFormat)
 					if(vTaskList[i].getGroup()==1)
 					{
 						vTmpDiv=this.newNode(vTmpCell, 'div', null, null, vCellContents);
-						var vTmpSpan=this.newNode(vTmpDiv, 'span', vDivId+'group_'+vID, 'gfoldercollapse', (vTaskList[i].getOpen()==1)?'-':'+');
-						vTaskList[i].setGroupSpan(vTmpSpan);
-						JSGantt.addFolderListeners(this, vTmpSpan, vID);
+						//var vTmpSpan=this.newNode(vTmpDiv, 'span', vDivId+'group_'+vID, 'gfoldercollapse', (vTaskList[i].getOpen()==1)?'-':'+');
+						//vTaskList[i].setGroupSpan(vTmpSpan);
+						//JSGantt.addFolderListeners(this, vTmpSpan, vID);
 						vTmpDiv.appendChild(document.createTextNode('\u00A0'+vTaskList[i].getName()));
 					}
 					else
