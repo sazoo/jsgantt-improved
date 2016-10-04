@@ -191,7 +191,7 @@ div.gtaskbarcontainer		{ z-index: 1; position: absolute; top: 0px }
 .rhscrpad			{ width: 150px; position: absolute; top: 0px; height: 1px; }
 
 .gchartgrid			{ width: 100%; padding-right: 0px; padding-left: 0px; padding-bottom: 0px; padding-top: 0px; background-color: #ffffff; position: relative;  min-height: 0%; }
-.gchartlbl			{ width: 100%; padding-right: 0px; padding-left: 0px; padding-bottom: 0px; padding-top: 0px; background-color: #ffffff; position: relative; overflow: hidden; }
+.gchartlbl			{ width: 100%; padding-right: 0px; padding-left: 0px; padding-bottom: 0px; padding-top: 0px; background-color: #ffffff; position: relative; }
 
 /* Old Internet Explorer version hacks */
 .gantt						{ _height: 100% }	/* otherwise the chart disappears! */
