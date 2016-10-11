@@ -672,7 +672,7 @@ JSGantt.GanttChart=function(pDiv, pFormat)
 			}
 		}
 		// draw the current date line
-		if (vTodayPx>=0) this.sLine(vTodayPx, 0, vTodayPx, this.getChartTable().offsetHeight-1, 'gCurDate');
+		//if (vTodayPx>=0) this.sLine(vTodayPx, 0, vTodayPx, this.getChartTable().offsetHeight-1, 'gCurDate');
 	};
 
 	this.getArrayLocationByID=function(pId)
