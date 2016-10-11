@@ -770,109 +770,7 @@ JSGantt.GanttChart=function(pDiv, pFormat)
 			if(vShowComp==1)this.newNode(vTmpRow, 'td', null, 'gtaskheading gpccomplete', vLangs[vLang]['comp']);
 			if(vShowStartDate==1)this.newNode(vTmpRow, 'td', null, 'gtaskheading gstartdate', vLangs[vLang]['startdate']);
 			if(vShowEndDate==1)this.newNode(vTmpRow, 'td', null, 'gtaskheading genddate', vLangs[vLang]['enddate']);
-
-			vTmpDiv=this.newNode(vLeftHeader, 'div', null, 'glabelfooter');
-
-			var vLeftTable=document.createDocumentFragment();
-			var vTmpDiv2=this.newNode(vLeftTable, 'div', vDivId+'glistbody', 'glistgrid gcontainercol');
-			this.setListBody(vTmpDiv2);
-			vTmpTab=this.newNode(vTmpDiv2, 'table', null, 'gtasktable');
-			vTmpTBody=this.newNode(vTmpTab, 'tbody');
-
-			for(i=0; i<vTaskList.length; i++)
-			{
-				if(vTaskList[i].getGroup()==1) var vBGColor='ggroupitem';
-				else vBGColor='glineitem';
-
-				vID=vTaskList[i].getID();
-
-				if((!(vTaskList[i].getParItem() && vTaskList[i].getParItem().getGroup()==2)) || vTaskList[i].getGroup()==2)
-				{
-					if(vTaskList[i].getVisible()==0) vTmpRow=this.newNode(vTmpTBody, 'tr', vDivId+'child_'+vID, 'gname '+vBGColor, null, null, null, 'none');
-					else vTmpRow=this.newNode(vTmpTBody, 'tr', vDivId+'child_'+vID, 'gname '+vBGColor);
-					vTaskList[i].setListChildRow(vTmpRow);
-					this.newNode(vTmpRow, 'td', null, 'gtasklist', '');
-					vTmpCell=this.newNode(vTmpRow, 'td', null, 'gtaskname');
-
-					var vCellContents ='';
-					for(j=1; j<vTaskList[i].getLevel(); j++)
-					{
-						vCellContents+='\u00A0\u00A0\u00A0\u00A0';
-					}
-
-					if(vTaskList[i].getGroup()==1)
-					{
-						vTmpDiv=this.newNode(vTmpCell, 'div', null, null, vCellContents);
-						//var vTmpSpan=this.newNode(vTmpDiv, 'span', vDivId+'group_'+vID, 'gfoldercollapse', (vTaskList[i].getOpen()==1)?'-':'+');
-						//vTaskList[i].setGroupSpan(vTmpSpan);
-						//JSGantt.addFolderListeners(this, vTmpSpan, vID);
-						vTmpDiv.appendChild(document.createTextNode('\u00A0'+vTaskList[i].getName()));
-					}
-					else
-					{
-						vCellContents+='\u00A0\u00A0\u00A0\u00A0';
-						vTmpDiv=this.newNode(vTmpCell, 'div', null, null, vCellContents+vTaskList[i].getName());
-					}
-
-					if(vShowRes==1)
-					{
-						vTmpCell=this.newNode(vTmpRow, 'td', null, 'gresource');
-						vTmpDiv=this.newNode(vTmpCell, 'div', null, null, vTaskList[i].getResource());
-					}
-					if(vShowDur==1)
-					{
-						vTmpCell=this.newNode(vTmpRow, 'td', null, 'gduration');
-						vTmpDiv=this.newNode(vTmpCell, 'div', null, null, vTaskList[i].getDuration(vFormat, vLangs[vLang]));
-					}
-					if(vShowComp==1)
-					{
-						vTmpCell=this.newNode(vTmpRow, 'td', null, 'gpccomplete');
-						vTmpDiv=this.newNode(vTmpCell, 'div', null, null, vTaskList[i].getCompStr());
-					}
-					if(vShowStartDate==1)
-					{
-						vTmpCell=this.newNode(vTmpRow, 'td', null, 'gstartdate');
-						vTmpDiv=this.newNode(vTmpCell, 'div', null, null, JSGantt.formatDateStr(vTaskList[i].getStart(), vDateTaskTableDisplayFormat, vLangs[vLang]));
-					}
-					if(vShowEndDate==1)
-					{
-						vTmpCell=this.newNode(vTmpRow, 'td', null, 'genddate');
-						vTmpDiv=this.newNode(vTmpCell, 'div', null, null, JSGantt.formatDateStr(vTaskList[i].getEnd(), vDateTaskTableDisplayFormat, vLangs[vLang]));
-					}
-					vNumRows++;
-				}
-			}
-
-			// DRAW the date format selector at bottom left.
-			vTmpRow=this.newNode(vTmpTBody, 'tr');
-			this.newNode(vTmpRow, 'td', null, 'gtasklist', '\u00A0');
-			vTmpCell=this.newNode(vTmpRow, 'td', null, 'gspanning gtaskname');
-			vTmpCell.appendChild(this.drawSelector('bottom'));
-			if(vShowRes==1)this.newNode(vTmpRow, 'td', null, 'gspanning gresource', '\u00A0');
-			if(vShowDur==1)this.newNode(vTmpRow, 'td', null, 'gspanning gduration', '\u00A0');
-			if(vShowComp==1)this.newNode(vTmpRow, 'td', null, 'gspanning gpccomplete', '\u00A0');
-			if(vShowStartDate==1)this.newNode(vTmpRow, 'td', null, 'gspanning gstartdate', '\u00A0');
-			if(vShowEndDate==1)this.newNode(vTmpRow, 'td', null, 'gspanning genddate', '\u00A0');
-			// Add some white space so the vertical scroll distance should always be greater
-			// than for the right pane (keep to a minimum as it is seen in unconstrained height designs)
-			this.newNode(vTmpDiv2, 'br');
-			this.newNode(vTmpDiv2, 'br');
-
-			// Draw the Chart Rows
-			var vRightHeader=document.createDocumentFragment();
-			vTmpDiv=this.newNode(vRightHeader, 'div', vDivId+'gcharthead', 'gchartlbl gcontainercol');
-			this.setChartHead(vTmpDiv);
-			vTmpTab=this.newNode(vTmpDiv, 'table', vDivId+'chartTableh', 'gcharttableh');
-			vTmpTBody=this.newNode(vTmpTab, 'tbody');
-			vTmpRow=this.newNode(vTmpTBody, 'tr');
-
-			vTmpDate.setFullYear(vMinDate.getFullYear(), vMinDate.getMonth(), vMinDate.getDate());
-			if(vFormat=='hour')vTmpDate.setHours(vMinDate.getHours());
-			else vTmpDate.setHours(0);
-			vTmpDate.setMinutes(0);
-			vTmpDate.setSeconds(0);
-			vTmpDate.setMilliseconds(0);
-
+			
 			var vColSpan=1;
 			// Major Date Header
 			while(vTmpDate.getTime()<=vMaxDate.getTime())
@@ -1011,6 +909,110 @@ JSGantt.GanttChart=function(pDiv, pFormat)
 					vTmpDate.setDate(vTmpDate.getDate()+1);
 				}
 			}
+
+			vTmpDiv=this.newNode(vLeftHeader, 'div', null, 'glabelfooter');
+
+			var vLeftTable=document.createDocumentFragment();
+			var vTmpDiv2=this.newNode(vLeftTable, 'div', vDivId+'glistbody', 'glistgrid gcontainercol');
+			this.setListBody(vTmpDiv2);
+			vTmpTab=this.newNode(vTmpDiv2, 'table', null, 'gtasktable');
+			vTmpTBody=this.newNode(vTmpTab, 'tbody');
+
+			for(i=0; i<vTaskList.length; i++)
+			{
+				if(vTaskList[i].getGroup()==1) var vBGColor='ggroupitem';
+				else vBGColor='glineitem';
+
+				vID=vTaskList[i].getID();
+
+				if((!(vTaskList[i].getParItem() && vTaskList[i].getParItem().getGroup()==2)) || vTaskList[i].getGroup()==2)
+				{
+					if(vTaskList[i].getVisible()==0) vTmpRow=this.newNode(vTmpTBody, 'tr', vDivId+'child_'+vID, 'gname '+vBGColor, null, null, null, 'none');
+					else vTmpRow=this.newNode(vTmpTBody, 'tr', vDivId+'child_'+vID, 'gname '+vBGColor);
+					vTaskList[i].setListChildRow(vTmpRow);
+					this.newNode(vTmpRow, 'td', null, 'gtasklist', '');
+					vTmpCell=this.newNode(vTmpRow, 'td', null, 'gtaskname');
+
+					var vCellContents ='';
+					for(j=1; j<vTaskList[i].getLevel(); j++)
+					{
+						vCellContents+='\u00A0\u00A0\u00A0\u00A0';
+					}
+
+					if(vTaskList[i].getGroup()==1)
+					{
+						vTmpDiv=this.newNode(vTmpCell, 'div', null, null, vCellContents);
+						//var vTmpSpan=this.newNode(vTmpDiv, 'span', vDivId+'group_'+vID, 'gfoldercollapse', (vTaskList[i].getOpen()==1)?'-':'+');
+						//vTaskList[i].setGroupSpan(vTmpSpan);
+						//JSGantt.addFolderListeners(this, vTmpSpan, vID);
+						vTmpDiv.appendChild(document.createTextNode('\u00A0'+vTaskList[i].getName()));
+					}
+					else
+					{
+						vCellContents+='\u00A0\u00A0\u00A0\u00A0';
+						vTmpDiv=this.newNode(vTmpCell, 'div', null, null, vCellContents+vTaskList[i].getName());
+					}
+
+					if(vShowRes==1)
+					{
+						vTmpCell=this.newNode(vTmpRow, 'td', null, 'gresource');
+						vTmpDiv=this.newNode(vTmpCell, 'div', null, null, vTaskList[i].getResource());
+					}
+					if(vShowDur==1)
+					{
+						vTmpCell=this.newNode(vTmpRow, 'td', null, 'gduration');
+						vTmpDiv=this.newNode(vTmpCell, 'div', null, null, vTaskList[i].getDuration(vFormat, vLangs[vLang]));
+					}
+					if(vShowComp==1)
+					{
+						vTmpCell=this.newNode(vTmpRow, 'td', null, 'gpccomplete');
+						vTmpDiv=this.newNode(vTmpCell, 'div', null, null, vTaskList[i].getCompStr());
+					}
+					if(vShowStartDate==1)
+					{
+						vTmpCell=this.newNode(vTmpRow, 'td', null, 'gstartdate');
+						vTmpDiv=this.newNode(vTmpCell, 'div', null, null, JSGantt.formatDateStr(vTaskList[i].getStart(), vDateTaskTableDisplayFormat, vLangs[vLang]));
+					}
+					if(vShowEndDate==1)
+					{
+						vTmpCell=this.newNode(vTmpRow, 'td', null, 'genddate');
+						vTmpDiv=this.newNode(vTmpCell, 'div', null, null, JSGantt.formatDateStr(vTaskList[i].getEnd(), vDateTaskTableDisplayFormat, vLangs[vLang]));
+					}
+					vNumRows++;
+				}
+			}
+
+			// DRAW the date format selector at bottom left.
+			vTmpRow=this.newNode(vTmpTBody, 'tr');
+			this.newNode(vTmpRow, 'td', null, 'gtasklist', '\u00A0');
+			vTmpCell=this.newNode(vTmpRow, 'td', null, 'gspanning gtaskname');
+			vTmpCell.appendChild(this.drawSelector('bottom'));
+			if(vShowRes==1)this.newNode(vTmpRow, 'td', null, 'gspanning gresource', '\u00A0');
+			if(vShowDur==1)this.newNode(vTmpRow, 'td', null, 'gspanning gduration', '\u00A0');
+			if(vShowComp==1)this.newNode(vTmpRow, 'td', null, 'gspanning gpccomplete', '\u00A0');
+			if(vShowStartDate==1)this.newNode(vTmpRow, 'td', null, 'gspanning gstartdate', '\u00A0');
+			if(vShowEndDate==1)this.newNode(vTmpRow, 'td', null, 'gspanning genddate', '\u00A0');
+			// Add some white space so the vertical scroll distance should always be greater
+			// than for the right pane (keep to a minimum as it is seen in unconstrained height designs)
+			this.newNode(vTmpDiv2, 'br');
+			this.newNode(vTmpDiv2, 'br');
+
+			// Draw the Chart Rows
+			var vRightHeader=document.createDocumentFragment();
+			vTmpDiv=this.newNode(vRightHeader, 'div', vDivId+'gcharthead', 'gchartlbl gcontainercol');
+			this.setChartHead(vTmpDiv);
+			vTmpTab=this.newNode(vTmpDiv, 'table', vDivId+'chartTableh', 'gcharttableh');
+			vTmpTBody=this.newNode(vTmpTab, 'tbody');
+			vTmpRow=this.newNode(vTmpTBody, 'tr');
+
+			vTmpDate.setFullYear(vMinDate.getFullYear(), vMinDate.getMonth(), vMinDate.getDate());
+			if(vFormat=='hour')vTmpDate.setHours(vMinDate.getHours());
+			else vTmpDate.setHours(0);
+			vTmpDate.setMinutes(0);
+			vTmpDate.setSeconds(0);
+			vTmpDate.setMilliseconds(0);
+
+			
 			vDateRow=vTmpRow;
 
 			vTaskLeftPx=(vNumCols *(vColWidth+1))+1;
