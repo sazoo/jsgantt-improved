@@ -183,7 +183,6 @@ JSGantt.TaskItem=function(pID, pName, pStart, pEnd, pClass, pLink, pMile, pRes, 
 	this.getDepend=function(){if(vDepend) return vDepend; else return null;};
 	this.getDepType=function(){if(vDependType) return vDependType; else return null;};
 	this.getCaption=function(){if(vCaption) return vCaption; else return '';};
-	this.getResource=function(){if(vRes) return vRes; else return '\u00A0';};
 	this.getCompVal=function(){if(vComp) return vComp; else return 0;};
 	this.getCompStr=function(){if(vComp) return vComp+'%'; else return '';};
 	this.getNotes=function(){return vNotes;};
@@ -754,7 +753,7 @@ JSGantt.GanttChart=function(pDiv, pFormat)
 			var vTmpTab=this.newNode(vTmpDiv, 'table', null, 'gtasktableh');
 			var vTmpTBody=this.newNode(vTmpTab, 'tbody');
 			var vTmpRow=this.newNode(vTmpTBody, 'tr');
-			this.newNode(vTmpRow, 'td', null, 'gtasklist', '\u00A0');
+			this.newNode(vTmpRow, 'td', null, 'gtasklist', '');
 			var vTmpCell=this.newNode(vTmpRow, 'td', null, 'gspanning gtaskname');
 			vTmpCell.appendChild(this.drawSelector('top'));
 			if(vShowRes==1)this.newNode(vTmpRow, 'td', null, 'gspanning gresource', '\u00A0');
@@ -764,8 +763,8 @@ JSGantt.GanttChart=function(pDiv, pFormat)
 			if(vShowEndDate==1)this.newNode(vTmpRow, 'td', null, 'gspanning genddate', '\u00A0');
 
 			vTmpRow=this.newNode(vTmpTBody, 'tr');
-			this.newNode(vTmpRow, 'td', null, 'gtasklist', '\u00A0');
-			this.newNode(vTmpRow, 'td', null, 'gtaskname', '\u00A0');
+			this.newNode(vTmpRow, 'td', null, 'gtasklist', '');
+			this.newNode(vTmpRow, 'td', null, 'gtaskname', '');
 			if(vShowRes==1)this.newNode(vTmpRow, 'td', null, 'gtaskheading gresource', vLangs[vLang]['resource']);
 			if(vShowDur==1)this.newNode(vTmpRow, 'td', null, 'gtaskheading gduration', vLangs[vLang]['duration']);
 			if(vShowComp==1)this.newNode(vTmpRow, 'td', null, 'gtaskheading gpccomplete', vLangs[vLang]['comp']);
@@ -792,7 +791,7 @@ JSGantt.GanttChart=function(pDiv, pFormat)
 					if(vTaskList[i].getVisible()==0) vTmpRow=this.newNode(vTmpTBody, 'tr', vDivId+'child_'+vID, 'gname '+vBGColor, null, null, null, 'none');
 					else vTmpRow=this.newNode(vTmpTBody, 'tr', vDivId+'child_'+vID, 'gname '+vBGColor);
 					vTaskList[i].setListChildRow(vTmpRow);
-					this.newNode(vTmpRow, 'td', null, 'gtasklist', '\u00A0');
+					this.newNode(vTmpRow, 'td', null, 'gtasklist', '');
 					vTmpCell=this.newNode(vTmpRow, 'td', null, 'gtaskname');
 
 					var vCellContents ='';
