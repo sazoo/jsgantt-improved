@@ -183,6 +183,7 @@ JSGantt.TaskItem=function(pID, pName, pStart, pEnd, pClass, pLink, pMile, pRes, 
 	this.getDepend=function(){if(vDepend) return vDepend; else return null;};
 	this.getDepType=function(){if(vDependType) return vDependType; else return null;};
 	this.getCaption=function(){if(vCaption) return vCaption; else return '';};
+	this.getResource=function(){if(vRes) return vRes; else return '\u00A0';};
 	this.getCompVal=function(){if(vComp) return vComp; else return 0;};
 	this.getCompStr=function(){if(vComp) return vComp+'%'; else return '';};
 	this.getNotes=function(){return vNotes;};
@@ -671,7 +672,7 @@ JSGantt.GanttChart=function(pDiv, pFormat)
 			}
 		}
 		// draw the current date line
-		//if (vTodayPx>=0) this.sLine(vTodayPx, 0, vTodayPx, this.getChartTable().offsetHeight-1, 'gCurDate');
+		if (vTodayPx>=0) this.sLine(vTodayPx, 0, vTodayPx, this.getChartTable().offsetHeight-1, 'gCurDate');
 	};
 
 	this.getArrayLocationByID=function(pId)
@@ -753,7 +754,7 @@ JSGantt.GanttChart=function(pDiv, pFormat)
 			var vTmpTab=this.newNode(vTmpDiv, 'table', null, 'gtasktableh');
 			var vTmpTBody=this.newNode(vTmpTab, 'tbody');
 			var vTmpRow=this.newNode(vTmpTBody, 'tr');
-			this.newNode(vTmpRow, 'td', null, 'gtasklist', '');
+			this.newNode(vTmpRow, 'td', null, 'gtasklist', '\u00A0');
 			var vTmpCell=this.newNode(vTmpRow, 'td', null, 'gspanning gtaskname');
 			vTmpCell.appendChild(this.drawSelector('top'));
 			if(vShowRes==1)this.newNode(vTmpRow, 'td', null, 'gspanning gresource', '\u00A0');
@@ -761,16 +762,15 @@ JSGantt.GanttChart=function(pDiv, pFormat)
 			if(vShowComp==1)this.newNode(vTmpRow, 'td', null, 'gspanning gpccomplete', '\u00A0');
 			if(vShowStartDate==1)this.newNode(vTmpRow, 'td', null, 'gspanning gstartdate', '\u00A0');
 			if(vShowEndDate==1)this.newNode(vTmpRow, 'td', null, 'gspanning genddate', '\u00A0');
-
-			vTmpRow=this.newNode(vTmpTBody, 'tr');
-			this.newNode(vTmpRow, 'td', null, 'gtasklist', '');
-			this.newNode(vTmpRow, 'td', null, 'gtaskname', '');
-			if(vShowRes==1)this.newNode(vTmpRow, 'td', null, 'gtaskheading gresource', vLangs[vLang]['resource']);
-			if(vShowDur==1)this.newNode(vTmpRow, 'td', null, 'gtaskheading gduration', vLangs[vLang]['duration']);
-			if(vShowComp==1)this.newNode(vTmpRow, 'td', null, 'gtaskheading gpccomplete', vLangs[vLang]['comp']);
-			if(vShowStartDate==1)this.newNode(vTmpRow, 'td', null, 'gtaskheading gstartdate', vLangs[vLang]['startdate']);
-			if(vShowEndDate==1)this.newNode(vTmpRow, 'td', null, 'gtaskheading genddate', vLangs[vLang]['enddate']);
 			
+			//major week heading
+			vTmpDate.setFullYear(vMinDate.getFullYear(), vMinDate.getMonth(), vMinDate.getDate());
+			if(vFormat=='hour')vTmpDate.setHours(vMinDate.getHours());
+			else vTmpDate.setHours(0);
+			vTmpDate.setMinutes(0);
+			vTmpDate.setSeconds(0);
+			vTmpDate.setMilliseconds(0);
+
 			var vColSpan=1;
 			// Major Date Header
 			while(vTmpDate.getTime()<=vMaxDate.getTime())
@@ -823,9 +823,20 @@ JSGantt.GanttChart=function(pDiv, pFormat)
 					vTmpDate.setDate(vTmpDate.getDate()+1);
 				}
 			}
+			//end major week heading
+			
+			
 
 			vTmpRow=this.newNode(vTmpTBody, 'tr');
-
+			this.newNode(vTmpRow, 'td', null, 'gtasklist', '\u00A0');
+			this.newNode(vTmpRow, 'td', null, 'gtaskname', '\u00A0');
+			if(vShowRes==1)this.newNode(vTmpRow, 'td', null, 'gtaskheading gresource', vLangs[vLang]['resource']);
+			if(vShowDur==1)this.newNode(vTmpRow, 'td', null, 'gtaskheading gduration', vLangs[vLang]['duration']);
+			if(vShowComp==1)this.newNode(vTmpRow, 'td', null, 'gtaskheading gpccomplete', vLangs[vLang]['comp']);
+			if(vShowStartDate==1)this.newNode(vTmpRow, 'td', null, 'gtaskheading gstartdate', vLangs[vLang]['startdate']);
+			if(vShowEndDate==1)this.newNode(vTmpRow, 'td', null, 'gtaskheading genddate', vLangs[vLang]['enddate']);
+			
+			//minor week heading
 			// Minor Date header and Cell Rows
 			vTmpDate.setFullYear(vMinDate.getFullYear(), vMinDate.getMonth(), vMinDate.getDate(), vMinDate.getHours());
 			if(vFormat=='hour')vTmpDate.setHours(vMinDate.getHours());
@@ -909,6 +920,7 @@ JSGantt.GanttChart=function(pDiv, pFormat)
 					vTmpDate.setDate(vTmpDate.getDate()+1);
 				}
 			}
+			//end minor week heading
 
 			vTmpDiv=this.newNode(vLeftHeader, 'div', null, 'glabelfooter');
 
@@ -930,7 +942,7 @@ JSGantt.GanttChart=function(pDiv, pFormat)
 					if(vTaskList[i].getVisible()==0) vTmpRow=this.newNode(vTmpTBody, 'tr', vDivId+'child_'+vID, 'gname '+vBGColor, null, null, null, 'none');
 					else vTmpRow=this.newNode(vTmpTBody, 'tr', vDivId+'child_'+vID, 'gname '+vBGColor);
 					vTaskList[i].setListChildRow(vTmpRow);
-					this.newNode(vTmpRow, 'td', null, 'gtasklist', '');
+					this.newNode(vTmpRow, 'td', null, 'gtasklist', '\u00A0');
 					vTmpCell=this.newNode(vTmpRow, 'td', null, 'gtaskname');
 
 					var vCellContents ='';
@@ -978,6 +990,157 @@ JSGantt.GanttChart=function(pDiv, pFormat)
 						vTmpCell=this.newNode(vTmpRow, 'td', null, 'genddate');
 						vTmpDiv=this.newNode(vTmpCell, 'div', null, null, JSGantt.formatDateStr(vTaskList[i].getEnd(), vDateTaskTableDisplayFormat, vLangs[vLang]));
 					}
+					
+					//draw task chart
+							var curTaskStart=vTaskList[i].getStart();
+							var curTaskEnd=vTaskList[i].getEnd();
+							if ((curTaskEnd.getTime()-(curTaskEnd.getTimezoneOffset()*60000))%(86400000)==0) curTaskEnd=new Date(curTaskEnd.getFullYear(), curTaskEnd.getMonth(), curTaskEnd.getDate()+1, curTaskEnd.getHours(), curTaskEnd.getMinutes(), curTaskEnd.getSeconds()); // add 1 day here to simplify calculations below
+
+							vTaskLeftPx=JSGantt.getOffset(vMinDate, curTaskStart, vColWidth, vFormat);
+							vTaskRightPx=JSGantt.getOffset(curTaskStart, curTaskEnd, vColWidth, vFormat);
+
+							vID=vTaskList[i].getID();
+							var vComb=(vTaskList[i].getParItem() && vTaskList[i].getParItem().getGroup()==2);
+							var vCellFormat='';
+
+							var vTmpItem=vTaskList[i];
+							var vCaptionStr='';
+							var vCaptClass=null;
+							if(vTaskList[i].getMile() && !vComb)
+							{
+								vTmpRow=this.newNode(vTmpTBody, 'tr', vDivId+'childrow_'+vID, 'gmileitem gmile'+vFormat, null, null, null, ((vTaskList[i].getVisible()==0)? 'none' : null));
+								vTaskList[i].setChildRow(vTmpRow);
+								JSGantt.addThisRowListeners(this, vTaskList[i].getListChildRow(), vTmpRow);
+								vTmpCell=this.newNode(vTmpRow, 'td', null, 'gtaskcell');
+								vTmpDiv=this.newNode(vTmpCell, 'div', null, 'gtaskcelldiv', '\u00A0\u00A0');
+								vTmpDiv=this.newNode(vTmpDiv, 'div', vDivId+'bardiv_'+vID, 'gtaskbarcontainer', null, 12, vTaskLeftPx-6);
+								vTaskList[i].setBarDiv(vTmpDiv);
+								vTmpDiv2=this.newNode(vTmpDiv, 'div', vDivId+'taskbar_'+vID, vTaskList[i].getClass(), null, 12);
+								vTaskList[i].setTaskDiv(vTmpDiv2);
+
+								if(vTaskList[i].getCompVal()<100)
+									vTmpDiv2.appendChild(document.createTextNode('\u25CA'));
+								else
+								{
+									vTmpDiv2=this.newNode(vTmpDiv2, 'div', null, 'gmilediamond');
+									this.newNode(vTmpDiv2, 'div', null, 'gmdtop');
+									this.newNode(vTmpDiv2, 'div', null, 'gmdbottom');
+								}
+
+								vCaptClass='gmilecaption';
+
+								if(!vSingleCell && !vComb)
+								{
+									vCellFormat='';
+									for(j=0; j<vNumCols-1; j++)
+									{
+										if(vFormat=='day'&&((j%7==4)||(j%7==5))) vCellFormat='gtaskcellwkend';
+										else vCellFormat='gtaskcell';
+										this.newNode(vTmpRow, 'td', null, vCellFormat, '\u00A0\u00A0');
+									}
+								}
+							}
+							else
+							{
+								vTaskWidth=vTaskRightPx-1;
+
+								// Draw Group Bar which has outer div with inner group div and several small divs to left and right to create angled-end indicators
+								if(vTaskList[i].getGroup())
+								{
+									vTaskWidth=(vTaskWidth>vMinGpLen && vTaskWidth<vMinGpLen*2)? vMinGpLen*2 : vTaskWidth; // Expand to show two end points
+									vTaskWidth=(vTaskWidth<vMinGpLen)? vMinGpLen : vTaskWidth; // expand to show one end point
+
+									vTmpRow=this.newNode(vTmpTBody, 'tr', vDivId+'childrow_'+vID, ((vTaskList[i].getGroup()==2)?'glineitem gitem':'ggroupitem ggroup')+vFormat, null, null, null, ((vTaskList[i].getVisible()==0)? 'none' : null));
+									vTaskList[i].setChildRow(vTmpRow);
+									JSGantt.addThisRowListeners(this, vTaskList[i].getListChildRow(), vTmpRow);
+									vTmpCell=this.newNode(vTmpRow, 'td', null, 'gtaskcell');
+									vTmpDiv=this.newNode(vTmpCell, 'div', null, 'gtaskcelldiv', '\u00A0\u00A0');
+									vTaskList[i].setCellDiv(vTmpDiv);
+									if(vTaskList[i].getGroup()==1)
+									{
+										vTmpDiv=this.newNode(vTmpDiv, 'div', vDivId+'bardiv_'+vID, 'gtaskbarcontainer', null, vTaskWidth, vTaskLeftPx);
+										vTaskList[i].setBarDiv(vTmpDiv);
+										vTmpDiv2=this.newNode(vTmpDiv, 'div', vDivId+'taskbar_'+vID, vTaskList[i].getClass(), null, vTaskWidth);
+										vTaskList[i].setTaskDiv(vTmpDiv2);
+
+										this.newNode(vTmpDiv2, 'div', vDivId+'complete_'+vID, vTaskList[i].getClass() +'complete', null, vTaskList[i].getCompStr());
+
+										this.newNode(vTmpDiv, 'div', null, vTaskList[i].getClass() +'endpointleft');
+										if (vTaskWidth>=vMinGpLen*2) this.newNode(vTmpDiv, 'div', null, vTaskList[i].getClass() +'endpointright');
+
+										vCaptClass='ggroupcaption';
+									}
+
+									if(!vSingleCell && !vComb)
+									{
+										vCellFormat='';
+										for(j=0; j<vNumCols-1; j++)
+										{
+											if(vFormat=='day'&&((j%7==4)||(j%7==5))) vCellFormat='gtaskcellwkend';
+											else vCellFormat='gtaskcell';
+											this.newNode(vTmpRow, 'td', null, vCellFormat, '\u00A0\u00A0');
+										}
+									}
+								}
+								else
+								{
+									vTaskWidth=(vTaskWidth<=0)? 1 : vTaskWidth;
+
+									if(vComb)
+									{
+										vTmpDiv=vTaskList[i].getParItem().getCellDiv();
+									}
+									else
+									{
+										vTmpRow=this.newNode(vTmpTBody, 'tr', vDivId+'childrow_'+vID, 'glineitem gitem'+vFormat, null, null, null, ((vTaskList[i].getVisible()==0)? 'none' : null));
+										vTaskList[i].setChildRow(vTmpRow);
+										JSGantt.addThisRowListeners(this, vTaskList[i].getListChildRow(), vTmpRow);
+										vTmpCell=this.newNode(vTmpRow, 'td', null, 'gtaskcell');
+										vTmpDiv=this.newNode(vTmpCell, 'div', null, 'gtaskcelldiv', '\u00A0\u00A0');
+									}
+									// Draw Task Bar which has colored bar div, and opaque completion div
+									vTmpDiv=this.newNode(vTmpDiv, 'div', vDivId+'bardiv_'+vID, 'gtaskbarcontainer', null, vTaskWidth, vTaskLeftPx);
+									vTaskList[i].setBarDiv(vTmpDiv);
+									vTmpDiv2=this.newNode(vTmpDiv, 'div', vDivId+'taskbar_'+vID, vTaskList[i].getClass(), null, vTaskWidth);
+									vTaskList[i].setTaskDiv(vTmpDiv2);
+									this.newNode(vTmpDiv2, 'div', vDivId+'complete_'+vID, vTaskList[i].getClass() +'complete', null, vTaskList[i].getCompStr());
+
+									if(vComb)vTmpItem=vTaskList[i].getParItem();
+									if(!vComb || (vComb && vTaskList[i].getParItem().getEnd()==vTaskList[i].getEnd())) vCaptClass='gcaption';
+
+									if(!vSingleCell && !vComb)
+									{
+										vCellFormat='';
+										for(j=0; j<vNumCols-1; j++)
+										{
+											if(vFormat=='day'&&((j%7==4)||(j%7==5))) vCellFormat='gtaskcellwkend';
+											else vCellFormat='gtaskcell';
+											this.newNode(vTmpRow, 'td', null, vCellFormat, '\u00A0\u00A0');
+										}
+									}
+								}
+							}
+
+							if(this.getCaptionType() && vCaptClass!==null)
+							{
+								switch(this.getCaptionType())
+								{
+									case 'Caption': var vCaptionStr=vTmpItem.getCaption(); break;
+									case 'Resource': vCaptionStr=vTmpItem.getResource(); break;
+									case 'Duration': vCaptionStr=vTmpItem.getDuration(vFormat, vLangs[vLang]); break;
+									case 'Complete': vCaptionStr=vTmpItem.getCompStr(); break;
+								}
+								this.newNode(vTmpDiv, 'div', null, vCaptClass, vCaptionStr, 120, (vCaptClass=='gmilecaption')?12:0);
+							}
+
+							if (vTaskList[i].getTaskDiv() && vTmpDiv)
+							{
+								// Add Task Info div for tooltip
+								vTmpDiv2=this.newNode(vTmpDiv, 'div', vDivId+'tt'+vID, null, null, null, null, 'none');
+								vTmpDiv2.appendChild(this.createTaskInfo(vTaskList[i]));
+								JSGantt.addTooltipListeners(this, vTaskList[i].getTaskDiv(), vTmpDiv2);
+							}
+					//end draw task
 					vNumRows++;
 				}
 			}
@@ -992,6 +1155,8 @@ JSGantt.GanttChart=function(pDiv, pFormat)
 			if(vShowComp==1)this.newNode(vTmpRow, 'td', null, 'gspanning gpccomplete', '\u00A0');
 			if(vShowStartDate==1)this.newNode(vTmpRow, 'td', null, 'gspanning gstartdate', '\u00A0');
 			if(vShowEndDate==1)this.newNode(vTmpRow, 'td', null, 'gspanning genddate', '\u00A0');
+			
+			
 			// Add some white space so the vertical scroll distance should always be greater
 			// than for the right pane (keep to a minimum as it is seen in unconstrained height designs)
 			this.newNode(vTmpDiv2, 'br');
@@ -1005,12 +1170,9 @@ JSGantt.GanttChart=function(pDiv, pFormat)
 			vTmpTBody=this.newNode(vTmpTab, 'tbody');
 			vTmpRow=this.newNode(vTmpTBody, 'tr');
 
-			vTmpDate.setFullYear(vMinDate.getFullYear(), vMinDate.getMonth(), vMinDate.getDate());
-			if(vFormat=='hour')vTmpDate.setHours(vMinDate.getHours());
-			else vTmpDate.setHours(0);
-			vTmpDate.setMinutes(0);
-			vTmpDate.setSeconds(0);
-			vTmpDate.setMilliseconds(0);
+			
+
+			vTmpRow=this.newNode(vTmpTBody, 'tr');
 
 			
 			vDateRow=vTmpRow;
@@ -1035,154 +1197,7 @@ JSGantt.GanttChart=function(pDiv, pFormat)
 			var j=0;
 			for(i=0; i<vTaskList.length; i++)
 			{
-				var curTaskStart=vTaskList[i].getStart();
-				var curTaskEnd=vTaskList[i].getEnd();
-				if ((curTaskEnd.getTime()-(curTaskEnd.getTimezoneOffset()*60000))%(86400000)==0) curTaskEnd=new Date(curTaskEnd.getFullYear(), curTaskEnd.getMonth(), curTaskEnd.getDate()+1, curTaskEnd.getHours(), curTaskEnd.getMinutes(), curTaskEnd.getSeconds()); // add 1 day here to simplify calculations below
 
-				vTaskLeftPx=JSGantt.getOffset(vMinDate, curTaskStart, vColWidth, vFormat);
-				vTaskRightPx=JSGantt.getOffset(curTaskStart, curTaskEnd, vColWidth, vFormat);
-
-				vID=vTaskList[i].getID();
-				var vComb=(vTaskList[i].getParItem() && vTaskList[i].getParItem().getGroup()==2);
-				var vCellFormat='';
-
-				var vTmpItem=vTaskList[i];
-				var vCaptionStr='';
-				var vCaptClass=null;
-				if(vTaskList[i].getMile() && !vComb)
-				{
-					vTmpRow=this.newNode(vTmpTBody, 'tr', vDivId+'childrow_'+vID, 'gmileitem gmile'+vFormat, null, null, null, ((vTaskList[i].getVisible()==0)? 'none' : null));
-					vTaskList[i].setChildRow(vTmpRow);
-					JSGantt.addThisRowListeners(this, vTaskList[i].getListChildRow(), vTmpRow);
-					vTmpCell=this.newNode(vTmpRow, 'td', null, 'gtaskcell');
-					vTmpDiv=this.newNode(vTmpCell, 'div', null, 'gtaskcelldiv', '\u00A0\u00A0');
-					vTmpDiv=this.newNode(vTmpDiv, 'div', vDivId+'bardiv_'+vID, 'gtaskbarcontainer', null, 12, vTaskLeftPx-6);
-					vTaskList[i].setBarDiv(vTmpDiv);
-					vTmpDiv2=this.newNode(vTmpDiv, 'div', vDivId+'taskbar_'+vID, vTaskList[i].getClass(), null, 12);
-					vTaskList[i].setTaskDiv(vTmpDiv2);
-
-					if(vTaskList[i].getCompVal()<100)
-						vTmpDiv2.appendChild(document.createTextNode('\u25CA'));
-					else
-					{
-						vTmpDiv2=this.newNode(vTmpDiv2, 'div', null, 'gmilediamond');
-						this.newNode(vTmpDiv2, 'div', null, 'gmdtop');
-						this.newNode(vTmpDiv2, 'div', null, 'gmdbottom');
-					}
-
-					vCaptClass='gmilecaption';
-
-					if(!vSingleCell && !vComb)
-					{
-						vCellFormat='';
-						for(j=0; j<vNumCols-1; j++)
-						{
-							if(vFormat=='day'&&((j%7==4)||(j%7==5))) vCellFormat='gtaskcellwkend';
-							else vCellFormat='gtaskcell';
-							this.newNode(vTmpRow, 'td', null, vCellFormat, '\u00A0\u00A0');
-						}
-					}
-				}
-				else
-				{
-					vTaskWidth=vTaskRightPx-1;
-
-					// Draw Group Bar which has outer div with inner group div and several small divs to left and right to create angled-end indicators
-					if(vTaskList[i].getGroup())
-					{
-						vTaskWidth=(vTaskWidth>vMinGpLen && vTaskWidth<vMinGpLen*2)? vMinGpLen*2 : vTaskWidth; // Expand to show two end points
-						vTaskWidth=(vTaskWidth<vMinGpLen)? vMinGpLen : vTaskWidth; // expand to show one end point
-
-						vTmpRow=this.newNode(vTmpTBody, 'tr', vDivId+'childrow_'+vID, ((vTaskList[i].getGroup()==2)?'glineitem gitem':'ggroupitem ggroup')+vFormat, null, null, null, ((vTaskList[i].getVisible()==0)? 'none' : null));
-						vTaskList[i].setChildRow(vTmpRow);
-						JSGantt.addThisRowListeners(this, vTaskList[i].getListChildRow(), vTmpRow);
-						vTmpCell=this.newNode(vTmpRow, 'td', null, 'gtaskcell');
-						vTmpDiv=this.newNode(vTmpCell, 'div', null, 'gtaskcelldiv', '\u00A0\u00A0');
-						vTaskList[i].setCellDiv(vTmpDiv);
-						if(vTaskList[i].getGroup()==1)
-						{
-							vTmpDiv=this.newNode(vTmpDiv, 'div', vDivId+'bardiv_'+vID, 'gtaskbarcontainer', null, vTaskWidth, vTaskLeftPx);
-							vTaskList[i].setBarDiv(vTmpDiv);
-							vTmpDiv2=this.newNode(vTmpDiv, 'div', vDivId+'taskbar_'+vID, vTaskList[i].getClass(), null, vTaskWidth);
-							vTaskList[i].setTaskDiv(vTmpDiv2);
-
-							this.newNode(vTmpDiv2, 'div', vDivId+'complete_'+vID, vTaskList[i].getClass() +'complete', null, vTaskList[i].getCompStr());
-
-							this.newNode(vTmpDiv, 'div', null, vTaskList[i].getClass() +'endpointleft');
-							if (vTaskWidth>=vMinGpLen*2) this.newNode(vTmpDiv, 'div', null, vTaskList[i].getClass() +'endpointright');
-
-							vCaptClass='ggroupcaption';
-						}
-
-						if(!vSingleCell && !vComb)
-						{
-							vCellFormat='';
-							for(j=0; j<vNumCols-1; j++)
-							{
-								if(vFormat=='day'&&((j%7==4)||(j%7==5))) vCellFormat='gtaskcellwkend';
-								else vCellFormat='gtaskcell';
-								this.newNode(vTmpRow, 'td', null, vCellFormat, '\u00A0\u00A0');
-							}
-						}
-					}
-					else
-					{
-						vTaskWidth=(vTaskWidth<=0)? 1 : vTaskWidth;
-
-						if(vComb)
-						{
-							vTmpDiv=vTaskList[i].getParItem().getCellDiv();
-						}
-						else
-						{
-							vTmpRow=this.newNode(vTmpTBody, 'tr', vDivId+'childrow_'+vID, 'glineitem gitem'+vFormat, null, null, null, ((vTaskList[i].getVisible()==0)? 'none' : null));
-							vTaskList[i].setChildRow(vTmpRow);
-							JSGantt.addThisRowListeners(this, vTaskList[i].getListChildRow(), vTmpRow);
-							vTmpCell=this.newNode(vTmpRow, 'td', null, 'gtaskcell');
-							vTmpDiv=this.newNode(vTmpCell, 'div', null, 'gtaskcelldiv', '\u00A0\u00A0');
-						}
-						// Draw Task Bar which has colored bar div, and opaque completion div
-						vTmpDiv=this.newNode(vTmpDiv, 'div', vDivId+'bardiv_'+vID, 'gtaskbarcontainer', null, vTaskWidth, vTaskLeftPx);
-						vTaskList[i].setBarDiv(vTmpDiv);
-						vTmpDiv2=this.newNode(vTmpDiv, 'div', vDivId+'taskbar_'+vID, vTaskList[i].getClass(), null, vTaskWidth);
-						vTaskList[i].setTaskDiv(vTmpDiv2);
-						this.newNode(vTmpDiv2, 'div', vDivId+'complete_'+vID, vTaskList[i].getClass() +'complete', null, vTaskList[i].getCompStr());
-
-						if(vComb)vTmpItem=vTaskList[i].getParItem();
-						if(!vComb || (vComb && vTaskList[i].getParItem().getEnd()==vTaskList[i].getEnd())) vCaptClass='gcaption';
-
-						if(!vSingleCell && !vComb)
-						{
-							vCellFormat='';
-							for(j=0; j<vNumCols-1; j++)
-							{
-								if(vFormat=='day'&&((j%7==4)||(j%7==5))) vCellFormat='gtaskcellwkend';
-								else vCellFormat='gtaskcell';
-								this.newNode(vTmpRow, 'td', null, vCellFormat, '\u00A0\u00A0');
-							}
-						}
-					}
-				}
-
-				if(this.getCaptionType() && vCaptClass!==null)
-				{
-					switch(this.getCaptionType())
-					{
-						case 'Caption': var vCaptionStr=vTmpItem.getCaption(); break;
-						case 'Resource': vCaptionStr=vTmpItem.getResource(); break;
-						case 'Duration': vCaptionStr=vTmpItem.getDuration(vFormat, vLangs[vLang]); break;
-						case 'Complete': vCaptionStr=vTmpItem.getCompStr(); break;
-					}
-					this.newNode(vTmpDiv, 'div', null, vCaptClass, vCaptionStr, 120, (vCaptClass=='gmilecaption')?12:0);
-				}
-
-				if (vTaskList[i].getTaskDiv() && vTmpDiv)
-				{
-					// Add Task Info div for tooltip
-					vTmpDiv2=this.newNode(vTmpDiv, 'div', vDivId+'tt'+vID, null, null, null, null, 'none');
-					vTmpDiv2.appendChild(this.createTaskInfo(vTaskList[i]));
-					JSGantt.addTooltipListeners(this, vTaskList[i].getTaskDiv(), vTmpDiv2);
-				}
 			}
 
 			if(!vSingleCell) vTmpTBody.appendChild(vDateRow.cloneNode(true));
